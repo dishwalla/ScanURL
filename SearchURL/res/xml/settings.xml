@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/pref_user" >
+      
+      <EditTextPreference 
+    android:defaultValue="4444" 
+    android:key="port" 
+    android:title="Port" 
+    android:dependency="service_on"        
+    /> 
+        
+    </PreferenceCategory>
+
+   
+</PreferenceScreen>

@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_prefs"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_prefs"/>
+    <item
+        android:id="@+id/action_exit"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_exit"/>
+
+</menu>
