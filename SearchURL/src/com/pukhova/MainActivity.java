@@ -1,5 +1,6 @@
 package com.pukhova;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import android.app.Activity;
@@ -54,15 +55,25 @@ public class MainActivity extends Activity implements OnClickListener {
 			{
 
 			case R.id.start:
-				URL myUrl = new URL(enterURL.getText().toString());
-				request = textToSearch.getText().toString();
-				MainLogicThread mlt = new MainLogicThread(myUrl);
-				MainLogic.visitedURls.add(myUrl);
-				mlt.start();
-				Intent intent = new Intent(MainActivity.this, Activity2.class);
-				startActivity(intent);
-				MainActivity.this.finish();
-				break;			
+
+				new Thread(new Runnable() {
+					public void run() {
+						while (mProgressStatus < 100) {
+					       mProgressStatus = doWork();
+						
+							// Update the progress bar
+							mHandler.post(new Runnable() {
+								public void run() {
+									mProgress.setProgress(mProgressStatus);
+								}
+							});
+						}
+					}
+				}).start();
+				//	Intent intent = new Intent(MainActivity.this, Activity2.class);
+				//	startActivity(intent);
+				//	MainActivity.this.finish();
+				//	break;			
 			}		
 
 		} 
@@ -71,6 +82,23 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	}
 
+	public int doWork(){
+		try {
+			URL myUrl;
+			myUrl = new URL(enterURL.getText().toString());
+			request = textToSearch.getText().toString();
+			MainLogicThread mlt = new MainLogicThread(myUrl);
+			MainLogic.visitedURls.add(myUrl);
+			mlt.start();
+
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 100;
+	}
+	
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 

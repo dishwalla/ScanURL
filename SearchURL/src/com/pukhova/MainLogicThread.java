@@ -27,23 +27,12 @@ public class MainLogicThread extends Thread{
 		try {
 			URLConnection myURLConnection = myUrl.openConnection();
 			myURLConnection.connect();
-			//	File Root = Environment.getExternalStorageDirectory(); 
-			//	File LogFile = new File(Root, "URLContent.txt");
 			BufferedReader in = new BufferedReader(new InputStreamReader(myUrl.openStream()));
 			String line = in.readLine();
 			String sc = new Scanner(in).useDelimiter("\\A").next();
 			in.close();
 			findText(sc);
 			findUrl(sc);
-			//		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(LogFile, true),"UTF-8"));
-			//			while (line != null){
-			//		byte[] cp = line.getBytes();
-			//		String sn = new String(cp, "UTF-8");
-			//		out.write(sn);
-			//		out.write("\n\n");
-			//				line = in.readLine();
-			//			}
-
 		} 
 		catch (MalformedURLException e) { 
 			// new URL() failed
@@ -53,7 +42,6 @@ public class MainLogicThread extends Thread{
 			// openConnection() failed
 			// ...
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -74,14 +62,28 @@ public class MainLogicThread extends Thread{
 		return null;
 	}
 
-	public static void findUrl(String s){
-		Pattern pt = Pattern.compile("href");
-        Matcher mt = pt.matcher(s);
-        if (mt.find()) {
-        //	MainLogicThread mlt = new MainLogicThread(myUrl);
-		//	MainLogic.visitedURls.add(myUrl);
-		//	mlt.start();
-           // System.out.println(mt.group(1));
-        } 
+	public void findUrl(String s){
+		/*   try {
+	            Pattern patt = Pattern.compile(pattern);
+	            Matcher matcher = patt.matcher(s);
+	            return matcher.matches();
+	        } catch (RuntimeException e) {
+	        return URL;
+	        
+	        final Pattern pattern = Pattern.compile("<a href=>(.+?)<>>");
+	        final Pattern pattern = Pattern.compile(<a[^>]+href=["']?([^'"> ]+)["']?[^>]*>/i);
+	        final Matcher matcher = pattern.matcher(s);
+	        matcher.find();
+	        System.out.println(matcher.group(1)); // Prints String I want to extract
+	    }     */
+
+		Pattern p = Pattern.compile("<a href='(.*?)'>");
+		Matcher m = p.matcher(s);
+		while(m.find()) {
+		//   System.out.println(m.group(0));
+		   System.out.println(m.group(1));
+		   String newURL = m.group(1);
+		}
+         
 	}
 }
