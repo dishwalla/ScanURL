@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     
     <uses-sdk
-        android:minSdkVersion="15"
+        android:minSdkVersion="8"
         android:targetSdkVersion="17" />
 
     <application
@@ -24,6 +24,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+         <activity android:name="com.pukhova.Activity2" >
+        </activity>
+        <activity android:name="com.pukhova.Activity3" >
         </activity>
         <activity
             android:name="com.pukhova.SettingsActivity">

@@ -14,29 +14,67 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-         android:hint="@string/enterURL_hint"
-        android:ems="10" android:inputType="textUri">
+        android:ems="10"
+        android:hint="@string/enterURL_hint"
+        android:inputType="textUri" >
 
         <requestFocus />
     </EditText>
 
-     <EditText
-         android:id="@+id/search_ET"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignLeft="@+id/enterURL_ET"
-         android:layout_alignParentRight="true"
-         android:layout_marginTop="38dp"
-         android:ems="10"
-         android:hint="@string/search_hint" />
+    <EditText
+        android:id="@+id/search_ET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/enterURL_ET"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="38dp"
+        android:ems="10"
+        android:hint="@string/search_hint" />
 
-     <Button
-         android:id="@+id/search"
-         android:layout_width="141dp"
-         android:layout_height="wrap_content"
-         android:layout_alignLeft="@+id/search_ET"
-         android:layout_below="@+id/search_ET"
-         android:layout_marginTop="16dp"
-         android:text="@string/search_button" />
+    <Button
+        android:id="@+id/start"
+        android:layout_width="141dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/search_ET"
+        android:layout_below="@+id/search_ET"
+        android:layout_marginTop="18dp"
+        android:text="@string/start_button" />
+
+    <Button
+        android:id="@+id/stop"
+        android:layout_width="141dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/start"
+        android:layout_below="@+id/start"
+        android:layout_marginTop="22dp"
+        android:text="@string/stop_button" />
+
+    <Button
+        android:id="@+id/pause"
+        android:layout_width="141dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/stop"
+        android:layout_below="@+id/stop"
+        android:layout_marginTop="14dp"
+        android:text="@string/pause_button" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@android:style/Widget.ProgressBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/pause"
+        android:layout_alignRight="@+id/search_ET"
+        android:layout_below="@+id/pause"
+        android:layout_marginTop="69dp" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/progressBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="25dp"
+        android:text="@string/loading" />
 
 </RelativeLayout>

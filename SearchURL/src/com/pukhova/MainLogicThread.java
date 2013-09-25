@@ -10,9 +10,13 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.content.Context;
+import android.widget.Toast;
+
 public class MainLogicThread extends Thread{
 
 	protected URL myUrl;
+	public int textFound;
 
 	public MainLogicThread(URL url){
 		myUrl = url;
@@ -59,7 +63,15 @@ public class MainLogicThread extends Thread{
 		if (s.toUpperCase().indexOf(request.toUpperCase()) != -1)
 		{
 			MainLogic.requestedWordFound.add(myUrl);
+			textFound +=1;
+			
 		}
+		else Toast.makeText(getApplicationContext(), R.string.notFound, Toast.LENGTH_SHORT).show();
+	}
+
+	private Context getApplicationContext() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	public static void findUrl(String s){

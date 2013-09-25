@@ -6,48 +6,63 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 public class MainActivity extends Activity implements OnClickListener {
 	public static String request;
 	private SharedPreferences preferences; 
+
 	protected EditText enterURL;
 	protected EditText textToSearch;
-	protected Button done;
-	protected Button search;
-	
+	protected Button start;
+	protected Button stop;
+	protected Button pause;
+
+	private static final int PROGRESS = 0x1;
+	private ProgressBar mProgress;
+	private int mProgressStatus = 0;
+
+	private Handler mHandler = new Handler();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
-		search = (Button)findViewById(R.id.search);
-		search.setOnClickListener(this);
+
+		start = (Button)findViewById(R.id.start);
+		stop = (Button)findViewById(R.id.stop);
+		pause = (Button)findViewById(R.id.pause);
+		start.setOnClickListener(this);
 		enterURL = (EditText)findViewById(R.id.enterURL_ET );
 		textToSearch = (EditText)findViewById(R.id.search_ET);
+		mProgress = (ProgressBar) findViewById(R.id.progressBar);
 	}
 
 
 	@Override
 	public void onClick(View v) {
-		
+
 		try {
 			switch (v.getId()) 
 			{
-		
-			case R.id.search:
-					URL myUrl = new URL(enterURL.getText().toString());
-					request = textToSearch.getText().toString();
-					MainLogicThread mlt = new MainLogicThread(myUrl);
-					MainLogic.visitedURls.add(myUrl);
-					mlt.start();
-					MainActivity.this.finish();
-					break;			
+
+			case R.id.start:
+				URL myUrl = new URL(enterURL.getText().toString());
+				request = textToSearch.getText().toString();
+				MainLogicThread mlt = new MainLogicThread(myUrl);
+				MainLogic.visitedURls.add(myUrl);
+				mlt.start();
+				Intent intent = new Intent(MainActivity.this, Activity2.class);
+				startActivity(intent);
+				MainActivity.this.finish();
+				break;			
 			}		
 
 		} 
@@ -55,7 +70,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -65,7 +80,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		MenuItem exit = menu.findItem(R.id.action_exit);
 		return true;
 	}
-	
+
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
@@ -84,7 +99,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	public boolean saveCheckedMenuItems(String name, Boolean MI) 
 	{
 		preferences.edit().putBoolean(name, MI).commit();
