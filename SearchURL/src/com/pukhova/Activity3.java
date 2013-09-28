@@ -16,9 +16,11 @@ public class Activity3 extends Activity {
 	//	Source source = MainLogicThread.
 		Source source = MainActivity.getSource();
 		//source.getLinks().toString();
-		someText.setText(source.getLinks().toString());
+//		someText.setText(source.getLinks().toString());
 	//	someText.setText(source.getPureUrls().toString());
-	//	someText.setText(source.getString());
+		someText.setText(source.getString());
+	//	someText.setText(source.getUrls().toString());
+	//	someText.setText(source.getSubURLs().toString());
 	}
 
 

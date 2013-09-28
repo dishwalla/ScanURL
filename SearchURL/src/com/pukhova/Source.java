@@ -8,9 +8,8 @@ public class Source {
 
 	protected int CountOfSubURLs;
 	protected List<URL> subURLs;
-	protected ArrayList<String> links;
-	protected List<String> pureUrls;
 	protected String string;
+	protected URL[] urls;
 
 	public int getCountOfSubURLs() {
 		return CountOfSubURLs;
@@ -28,22 +27,6 @@ public class Source {
 		this.subURLs = subURLs;
 	}
 
-	public ArrayList<String> getLinks() {
-		return links;
-	}
-
-	public void setLinks(ArrayList<String> links) {
-		this.links = links;
-	}
-
-	public List<String> getPureUrls() {
-		return pureUrls;
-	}
-
-	public void setPureUrls(List<String> pureUrls) {
-		this.pureUrls = pureUrls;
-	}
-
 	public String getString() {
 		return string;
 	}
@@ -52,6 +35,13 @@ public class Source {
 		this.string = string;
 	}
 
+	public URL[] getUrls() {
+		return urls;
+	}
+
+	public void setUrls(URL[] urls) {
+		this.urls = urls;
+	}
 
 	
 }

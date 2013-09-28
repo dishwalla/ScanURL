@@ -65,37 +65,44 @@ public class MainLogicThread extends Thread{
 	//	Toast.makeText(getApplicationContext(), R.string.notFound, Toast.LENGTH_SHORT).show();
 
 
-	public void findUrl(String s){
+	public void findUrl(String s) {
 		//Source source = new Source();
 		//		MainLogicThread thisThread = (MainLogicThread)Thread.currentThread();
 		//		Source source = thisThread.getSource();
+
 		Source source = MainActivity.getSource();
 		int totalCountOfURLs = 0;
-		Pattern p =Pattern.compile("(<a[^>]+>.+?</a>)",  Pattern.CASE_INSENSITIVE|Pattern.DOTALL);
+
+		Pattern p = Pattern.compile("a href=\"(.*?)\"");
 		Matcher m = p.matcher(s);
 		ArrayList<String> links = new ArrayList<String>();
-		//Object[] linksAsString = links.toArray();
-		
+	//	ArrayList<URL> urls = new ArrayList<URL>();
+	//	URL [] uri = new URL[links.size()];
 		while(m.find()){
-			links.add(m.group());
+			links.add(m.group(1));
 			totalCountOfURLs ++;
 		}
 		source.setCountOfSubURLs(totalCountOfURLs);
-		source.setLinks(links);
-		Pattern p2 = Pattern.compile("href=\"(.*?)\"");
-	/*	Matcher m2 = p2.matcher(linksAsString);
-		int x = 0;
-		List<String> url = new LinkedList<String>();
-		while(m2.find()) {
-			url.add(m2.group());  
-			x++;
-		}*/
-		//source.setPureUrls(url);
-		//	source.setString(linksAsString);
+	//	source.setString(links.toString());
+
+		URL[] u = new URL[links.size()];
+		for(int i=0; i<links.size();i++){
+			//   string.append(links.get(i).toString());
+			try {
+				u[i] = new URL(links.get(i).toString());
+			//	urls.set(i, new URL(links.get(i).toString()));
+			}
+			catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}	 
+	//	source.setString(u.toString());
+		source.setUrls(u);
+		//	source.setString(string.toString());
 	}
 
 	private Context getApplicationContext() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	public URL getMyUrl() {
@@ -105,13 +112,5 @@ public class MainLogicThread extends Thread{
 	public void setMyUrl(URL myUrl) {
 		this.myUrl = myUrl;
 	}
-
-	/*public Source getSource() {
-		return source;
-	}
-
-	public void setSource(Source source) {
-		this.source = source;
-	}*/
 
 }
