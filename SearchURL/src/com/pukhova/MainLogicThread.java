@@ -6,17 +6,20 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.content.Context;
-import android.widget.Toast;
 
 public class MainLogicThread extends Thread{
-
+	protected Map<URL, Integer> map;
 	protected URL myUrl;
-	public int textFound;
+	//protected Source source; 
 
 	public MainLogicThread(URL url){
 		myUrl = url;
@@ -48,42 +51,67 @@ public class MainLogicThread extends Thread{
 
 	public void findText(String s) throws Exception {
 		String request = MainActivity.request;
-		if (s.toUpperCase().indexOf(request.toUpperCase()) != -1)
-		{
-			MainLogic.requestedWordFound.add(myUrl);
-			textFound +=1;
-			
+		int lastIndex = 0;
+		int count = 0;
+		while(lastIndex != -1){
+			lastIndex = s.indexOf(request,lastIndex);
+			if( lastIndex != -1){
+				count ++;
+				lastIndex+=request.length();
+			}
 		}
-		else Toast.makeText(getApplicationContext(), R.string.notFound, Toast.LENGTH_SHORT).show();
+		MainLogic.map.put(myUrl, count); 
+	}	
+	//	Toast.makeText(getApplicationContext(), R.string.notFound, Toast.LENGTH_SHORT).show();
+
+
+	public void findUrl(String s){
+		//Source source = new Source();
+		//		MainLogicThread thisThread = (MainLogicThread)Thread.currentThread();
+		//		Source source = thisThread.getSource();
+		Source source = MainActivity.getSource();
+		int totalCountOfURLs = 0;
+		Pattern p =Pattern.compile("(<a[^>]+>.+?</a>)",  Pattern.CASE_INSENSITIVE|Pattern.DOTALL);
+		Matcher m = p.matcher(s);
+		ArrayList<String> links = new ArrayList<String>();
+		//Object[] linksAsString = links.toArray();
+		
+		while(m.find()){
+			links.add(m.group());
+			totalCountOfURLs ++;
+		}
+		source.setCountOfSubURLs(totalCountOfURLs);
+		source.setLinks(links);
+		Pattern p2 = Pattern.compile("href=\"(.*?)\"");
+	/*	Matcher m2 = p2.matcher(linksAsString);
+		int x = 0;
+		List<String> url = new LinkedList<String>();
+		while(m2.find()) {
+			url.add(m2.group());  
+			x++;
+		}*/
+		//source.setPureUrls(url);
+		//	source.setString(linksAsString);
 	}
 
 	private Context getApplicationContext() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	public void findUrl(String s){
-		/*   try {
-	            Pattern patt = Pattern.compile(pattern);
-	            Matcher matcher = patt.matcher(s);
-	            return matcher.matches();
-	        } catch (RuntimeException e) {
-	        return URL;
-	        
-	        final Pattern pattern = Pattern.compile("<a href=>(.+?)<>>");
-	        final Pattern pattern = Pattern.compile(<a[^>]+href=["']?([^'"> ]+)["']?[^>]*>/i);
-	        final Matcher matcher = pattern.matcher(s);
-	        matcher.find();
-	        System.out.println(matcher.group(1)); // Prints String I want to extract
-	    }     */
-
-		Pattern p = Pattern.compile("<a href='(.*?)'>");
-		Matcher m = p.matcher(s);
-		while(m.find()) {
-		//   System.out.println(m.group(0));
-		   System.out.println(m.group(1));
-		   String newURL = m.group(1);
-		}
-         
+	public URL getMyUrl() {
+		return myUrl;
 	}
+
+	public void setMyUrl(URL myUrl) {
+		this.myUrl = myUrl;
+	}
+
+	/*public Source getSource() {
+		return source;
+	}
+
+	public void setSource(Source source) {
+		this.source = source;
+	}*/
+
 }

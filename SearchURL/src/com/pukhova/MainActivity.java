@@ -25,11 +25,13 @@ public class MainActivity extends Activity implements OnClickListener {
 	protected Button start;
 	protected Button stop;
 	protected Button pause;
-
+	protected Button statistics;
+	//protected Source source; 
+	public static Source source = new Source();
+	
 	private static final int PROGRESS = 0x1;
 	private ProgressBar mProgress;
 	private int mProgressStatus = 0;
-
 	private Handler mHandler = new Handler();
 
 	@Override
@@ -40,65 +42,54 @@ public class MainActivity extends Activity implements OnClickListener {
 		start = (Button)findViewById(R.id.start);
 		stop = (Button)findViewById(R.id.stop);
 		pause = (Button)findViewById(R.id.pause);
-		start.setOnClickListener(this);
+		statistics = (Button)findViewById(R.id.statistics);
+		
 		enterURL = (EditText)findViewById(R.id.enterURL_ET );
 		textToSearch = (EditText)findViewById(R.id.search_ET);
 		mProgress = (ProgressBar) findViewById(R.id.progressBar);
+		
+		start.setOnClickListener(this);
+		stop.setOnClickListener(this);
+		pause.setOnClickListener(this);
+		statistics.setOnClickListener(this);
 	}
 
 
 	@Override
 	public void onClick(View v) {
-
-		try {
+		try{
 			switch (v.getId()) 
 			{
-
 			case R.id.start:
+				try {
+					URL myUrl = new URL(enterURL.getText().toString());
+					request = textToSearch.getText().toString();
+					MainLogicThread mlt = new MainLogicThread(myUrl);
+					MainLogic.visitedURls.add(myUrl);
+					mlt.start();
 
-				new Thread(new Runnable() {
-					public void run() {
-						while (mProgressStatus < 100) {
-					       mProgressStatus = doWork();
-						
-							// Update the progress bar
-							mHandler.post(new Runnable() {
-								public void run() {
-									mProgress.setProgress(mProgressStatus);
-								}
-							});
-						}
-					}
-				}).start();
-				//	Intent intent = new Intent(MainActivity.this, Activity2.class);
-				//	startActivity(intent);
-				//	MainActivity.this.finish();
-				//	break;			
-			}		
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;			
 
-		} 
+			case R.id.stop: 
+				break;
+			case R.id.pause: 
+				break;
+			case R.id.statistics:
+					Intent intent = new Intent(MainActivity.this, Activity3.class);
+					startActivity(intent);
+					MainActivity.this.finish();
+				break;
+			}
+		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public int doWork(){
-		try {
-			URL myUrl;
-			myUrl = new URL(enterURL.getText().toString());
-			request = textToSearch.getText().toString();
-			MainLogicThread mlt = new MainLogicThread(myUrl);
-			MainLogic.visitedURls.add(myUrl);
-			mlt.start();
-
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return 100;
-	}
-	
-	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -134,4 +125,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		return MI;
 	}
 
+	public static Source getSource() {
+		return source;
+	}
+	public static void setSource(Source source) {
+		MainActivity.source = source;
+	}
 }
