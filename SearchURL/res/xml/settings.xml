@@ -2,15 +2,24 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory android:title="@string/pref_user" >
-      
-      <EditTextPreference 
-    android:defaultValue="4444" 
-    android:key="port" 
-    android:title="Port" 
-    android:dependency="service_on"        
-    /> 
+        <EditTextPreference
+             android:defaultValue="1"
+            android:dialogMessage="How many threads will be started?"
+            android:key="threads"
+             android:numeric="integer"
+            android:negativeButtonText="Cancel"
+            android:positiveButtonText="Ok"
+            android:title="Number of running threads" />
         
+        <EditTextPreference
+             android:defaultValue="1"
+            android:dialogMessage="Max quantity of URLs"
+            android:key="urls"
+             android:numeric="integer"
+            android:negativeButtonText="Cancel"
+            android:positiveButtonText="Ok"
+            android:title="Max nuber of URLs to scan" />
     </PreferenceCategory>
+  
 
-   
 </PreferenceScreen>

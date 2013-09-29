@@ -20,7 +20,8 @@
           android:id="@android:id/list"
           android:layout_width="match_parent"
           android:layout_height="340dp"
-          android:layout_alignLeft="@+id/text" >
+          android:layout_alignLeft="@+id/text"
+          android:scrollbars="vertical|horizontal" >
 
       </ListView>
 

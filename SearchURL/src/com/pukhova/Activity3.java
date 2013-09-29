@@ -14,13 +14,13 @@ public class Activity3 extends Activity {
 		someText = (TextView)findViewById(R.id.someText);
 	//	MainLogicThread thisThread = (MainLogicThread)Thread.currentThread();
 	//	Source source = MainLogicThread.
-		Source source = MainActivity.getSource();
+	//	Source source = MainActivity.getSource();
 		//source.getLinks().toString();
 //		someText.setText(source.getLinks().toString());
 	//	someText.setText(source.getPureUrls().toString());
-		someText.setText(source.getString());
+	//	someText.setText(source.getString());
 	//	someText.setText(source.getUrls().toString());
-	//	someText.setText(source.getSubURLs().toString());
+		//someText.setText(source.getSubURLs().toString());
 	}
 
 
