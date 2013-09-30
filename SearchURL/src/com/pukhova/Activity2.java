@@ -2,14 +2,18 @@ package com.pukhova;
 
 
 import java.net.URL;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class Activity2 extends ListActivity {
@@ -36,11 +40,17 @@ public class Activity2 extends ListActivity {
 		}
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, lst);
-		//	ArrayAdapter<URL> adapter = new ArrayAdapter<URL>(this, android.R.layout.simple_expandable_list_item_1, url);
 		l.setAdapter(adapter);
+		cleanUp();
+		//	ArrayAdapter<URL> adapter = new ArrayAdapter<URL>(this, android.R.layout.simple_expandable_list_item_1, url);
 		//ArrayAdapter<URL> adapter2 = new ArrayAdapter<URL>(this, android.R.layout.simple_expandable_list_item_1, nl);
-
 	}
 
-
+	public static void cleanUp(){
+		MainLogic.visitedURls.clear(); 
+		MainLogic.globalListOfUrls.clear();
+		MainLogic.map.clear();
+		MainLogic.processedURLs.set(0);
+		MainLogic.progressBar.setProgress(0);
+	}
 }

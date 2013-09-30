@@ -6,15 +6,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import android.widget.ProgressBar;
 
 public class MainLogic {
 
-	public static List<URL> visitedURls= new LinkedList<URL>();
+	public static List<URL> visitedURls= Collections.synchronizedList(new LinkedList<URL>());
 	public static List<URL> globalListOfUrls = Collections.synchronizedList(new LinkedList<URL>());
 	public static Map<URL, Integer> map = new ConcurrentHashMap<URL, Integer>();
 	public static int threads;
 	public static int maxUrls;
-	public static int processedURLs = 0;
+	public static AtomicInteger processedURLs = new AtomicInteger(0);
+	public static ProgressBar progressBar;
 	
 	public static int getThreads() {
 		return threads;
@@ -34,14 +38,6 @@ public class MainLogic {
 
 	public void process() throws Exception {
 		
-	}
-
-	public static int getProcessedURLs() {
-		return processedURLs;
-	}
-
-	public static void setProcessedURLs(int processedURLs) {
-		MainLogic.processedURLs = processedURLs;
 	}
 	
 }

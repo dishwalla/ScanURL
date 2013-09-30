@@ -1,27 +1,26 @@
 package com.pukhova;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.util.Log;
+
 
 public class MainLogicThread extends Thread{
-	protected Map<URL, Integer> map;
 	protected URL myUrl;
-	
+
 	protected int CountOfSubURLs;
 	protected List<String> subURLs;
 	protected URL currentURL;
-	
+
 	public int getCountOfSubURLs() {
 		return CountOfSubURLs;
 	}
@@ -54,53 +53,41 @@ public class MainLogicThread extends Thread{
 	@Override
 	public void run() {
 		try {
-			//Source source = MainActivity.getSource();
-			//source.setCurrentURL(myUrl);
-			MainLogicThread thisThread = (MainLogicThread)Thread.currentThread();
-			thisThread.setCurrentURL(myUrl);
-			
 			URLConnection myURLConnection = myUrl.openConnection();
 			myURLConnection.connect();
-			BufferedReader in = new BufferedReader(new InputStreamReader(myUrl.openStream()));
-			String line = in.readLine();
+			InputStream in = myUrl.openStream();
+			//map.put(myUrl,Downloading")
 			String sc = new Scanner(in).useDelimiter("\\A").next();
 			in.close();
 			findText(sc);
 			findUrl(sc);
-			//List<String> listOfUrls = findUrl(sc);
-			URL thisUrl = thisThread.getCurrentURL();
-			MainLogic.visitedURls.add(thisUrl);
-		//	MainLogic.visitedURls.add(myUrl);
+			MainLogic.visitedURls.add(myUrl);
 			int maxCountOfURLs = MainLogic.getMaxUrls();
-			int processedURLs = MainLogic.getProcessedURLs();
-			//for(String currentURL : listOfUrls){
+			int processedURLs = MainLogic.processedURLs.get();
 			List<URL> mainList = MainLogic.globalListOfUrls;
 			synchronized(mainList) {
-				//   Iterator i = list.iterator();
 				for(URL currentURL : mainList){
 					if(!MainLogic.visitedURls.contains(currentURL) && processedURLs < maxCountOfURLs){
 						Thread t = new MainLogicThread(currentURL);
 						t.start();
+						Log.w("Search", "Processing url:" + currentURL + " " + processedURLs);
+						processedURLs = MainLogic.processedURLs.incrementAndGet();
 					}
-					//else return;
 				}
 			}
-		} 
-		catch (MalformedURLException e) { 
-			// new URL() failed
-			// ...
-		} 
-		catch (IOException e) {   
-			// openConnection() failed
-			// ...
 		} catch (Exception e) {
 			e.printStackTrace();
+			if (!MainLogic.map.containsKey(myUrl)){
+				MainLogic.map.put(myUrl, 0);
+			}
+		}
+		finally {
+			MainLogic.progressBar.incrementProgressBy(1);
 		}
 
 	}
 
 	public void findText(String s) throws Exception {
-	//	Source source = MainActivity.getSource();
 		String request = MainActivity.request;
 		int lastIndex = 0;
 		int count = 0;
@@ -111,49 +98,34 @@ public class MainLogicThread extends Thread{
 				lastIndex+=request.length();
 			}
 		}
-		MainLogicThread thisThread = (MainLogicThread)Thread.currentThread();
-		URL url =thisThread.getCurrentURL();
-		//URL url = source.getCurrentURL();
-		MainLogic.map.put(url, count); 
-
+		MainLogic.map.put(myUrl, count); 
 	}	
 
 
-	public void findUrl(String s) {
-	//	Source source = MainActivity.getSource();
-		int totalCountOfURLs = 0;
+	public List<URL> findUrl(String s) {
+		//int totalCountOfURLs = 0;
 		Pattern p = Pattern.compile("a href=\"(.*?)\"");
 		Matcher m = p.matcher(s);
 		ArrayList<String> links = new ArrayList<String>();
 		while(m.find()){
 			links.add(m.group(1));
-			totalCountOfURLs ++;
+		//	totalCountOfURLs ++;
 		}
-		MainLogicThread thisThread = (MainLogicThread)Thread.currentThread();
-		thisThread.setCountOfSubURLs(totalCountOfURLs);
-		thisThread.setSubURLs(links);
-	//	source.setCountOfSubURLs(totalCountOfURLs);
-	//	source.setSubURLs(links);
-		try {
+	//	setCountOfSubURLs(totalCountOfURLs);
+		setSubURLs(links);
+		List<URL> u = new ArrayList<URL>();
 			for(String currentURL : links){
-				URL nextURL = new URL(currentURL);
-				MainLogic.globalListOfUrls.add(nextURL);}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		MainLogic.setProcessedURLs(+1);
-
+				URL nextURL;
+				try {
+					nextURL = new URL(currentURL);
+					u.add(nextURL);
+					MainLogic.globalListOfUrls.add(nextURL);
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+			}
+			return u;
 	}
-
-	public static void cleanUp() throws Exception{
-		List<URL> visitedURls= MainLogic.visitedURls;
-		List<URL> globalListOfUrls = MainLogic.globalListOfUrls;
-		Map<URL, Integer> map = MainLogic.map; 
-		visitedURls.removeAll(visitedURls);
-		globalListOfUrls.removeAll(globalListOfUrls);
-		map.remove(map);
-	}
-
 
 	public URL getMyUrl() {
 		return myUrl;

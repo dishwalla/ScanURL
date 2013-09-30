@@ -29,10 +29,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	protected Button pause;
 	protected Button statistics;
 
-	public static Source source = new Source();
-
 	private static int myProgress=0;
-	private ProgressBar progressBar;
 	private int progressStatus=0;
 	private Handler myHandler=new Handler();
 
@@ -52,12 +49,12 @@ public class MainActivity extends Activity implements OnClickListener {
 		pause.setOnClickListener(this);
 		statistics.setOnClickListener(this);
 
-			String threads = preferences.getString("threads", "1");
-			MainLogic.setThreads(Integer.valueOf(threads));
-		//	if(threads > 6){threads = preferences.getInt("threads", 6);}
-			String maxUrls = preferences.getString("urls", "1");
-			MainLogic.setMaxUrls(Integer.valueOf(maxUrls));
+		
 		//	if(maxUrls > 150){threads = preferences.getInt("urls", 150);}
+		MainLogic.visitedURls.clear(); 
+		MainLogic.globalListOfUrls.clear();
+		MainLogic.map.clear();
+		MainLogic.processedURLs.set(0);
 	}
 
 	@Override
@@ -67,63 +64,34 @@ public class MainActivity extends Activity implements OnClickListener {
 			switch (v.getId()) 
 			{
 			case R.id.start:
-
+				String threads = preferences.getString("threads", "1");
+				MainLogic.setThreads(Integer.valueOf(threads));
+				//	if(threads > 6){threads = preferences.getInt("threads", 6);}
+				String maxUrls = preferences.getString("urls", "1");
+				MainLogic.setMaxUrls(Integer.valueOf(maxUrls));
 				myProgress=0;
-				progressBar=(ProgressBar)findViewById(R.id.progressBar);
-				progressBar.setMax(100);
+				MainLogic.progressBar=(ProgressBar)findViewById(R.id.progressBar);
+				MainLogic.progressBar.setMax(MainLogic.maxUrls);
 
-				new Thread(new Runnable() {
+				new Thread(){
 
 					@Override
 					public void run() {
-						// TODO Auto-generated method stub
-						while(progressStatus<100)
-						{
-							try {
-								progressStatus=performTask();
-							} catch (MalformedURLException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							myHandler.post(new Runnable()
-							{
-								public void run() {
-									progressBar.setProgress(progressStatus);
-								}
-							});
-
-						}
-						myHandler.post(new Runnable() {
-
-							@Override
-							public void run() {
-								// TODO Auto-generated method stub
-								Toast.makeText(getBaseContext(),"Task Completed",Toast.LENGTH_LONG).show();
-								progressStatus=0; 
-								myProgress=0;
-
-							}
-						});
-					}
-					private int performTask() throws MalformedURLException
-					{
+						URL myUrl;
 						try {
-							URL myUrl = new URL(enterURL.getText().toString());
+							myUrl = new URL(enterURL.getText().toString());
 							request = textToSearch.getText().toString();
 							MainLogicThread mlt = new MainLogicThread(myUrl);
-							//MainLogic.visitedURls.add(myUrl);
 							mlt.start();
-
-							Thread.sleep(100);
-						} catch (InterruptedException e)
-						{
+							MainLogic.processedURLs.incrementAndGet();
+							MainLogic.progressBar.incrementProgressBy(1);
+						} catch (MalformedURLException e) {
 							e.printStackTrace();
 						}
-						return ++myProgress;	
+					//	Toast.makeText(getBaseContext(),"Task Completed",Toast.LENGTH_LONG).show();
 					}
-				}).start();
+				}.start();
 				break;			
-
 			case R.id.stop: 
 				break;
 			case R.id.pause: 
@@ -174,11 +142,5 @@ public class MainActivity extends Activity implements OnClickListener {
 		preferences.edit().putBoolean(name, MI).commit();
 		return MI;
 	}
-	
-	public static Source getSource() {
-		return source;
-	}
-	public static void setSource(Source source) {
-		MainActivity.source = source;
-	}
+
 }
