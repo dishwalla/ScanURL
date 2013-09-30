@@ -7,7 +7,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -18,6 +17,35 @@ import java.util.regex.Pattern;
 public class MainLogicThread extends Thread{
 	protected Map<URL, Integer> map;
 	protected URL myUrl;
+	
+	protected int CountOfSubURLs;
+	protected List<String> subURLs;
+	protected URL currentURL;
+	
+	public int getCountOfSubURLs() {
+		return CountOfSubURLs;
+	}
+
+	public void setCountOfSubURLs(int countOfSubURLs) {
+		CountOfSubURLs = countOfSubURLs;
+	}
+
+	public List<String> getSubURLs() {
+		return subURLs;
+	}
+
+	public void setSubURLs(List<String> subURLs) {
+		this.subURLs = subURLs;
+	}
+
+	public URL getCurrentURL() {
+		return currentURL;
+	}
+
+	public void setCurrentURL(URL currentURL) {
+		this.currentURL = currentURL;
+	}
+
 
 	public MainLogicThread(URL url){
 		myUrl = url;
@@ -26,6 +54,11 @@ public class MainLogicThread extends Thread{
 	@Override
 	public void run() {
 		try {
+			//Source source = MainActivity.getSource();
+			//source.setCurrentURL(myUrl);
+			MainLogicThread thisThread = (MainLogicThread)Thread.currentThread();
+			thisThread.setCurrentURL(myUrl);
+			
 			URLConnection myURLConnection = myUrl.openConnection();
 			myURLConnection.connect();
 			BufferedReader in = new BufferedReader(new InputStreamReader(myUrl.openStream()));
@@ -33,17 +66,24 @@ public class MainLogicThread extends Thread{
 			String sc = new Scanner(in).useDelimiter("\\A").next();
 			in.close();
 			findText(sc);
-			List<String> listOfUrls = findUrl(sc);
-			MainLogic.setProcessedURLs(+1);
-			MainLogic.visitedURls.add(myUrl);
+			findUrl(sc);
+			//List<String> listOfUrls = findUrl(sc);
+			URL thisUrl = thisThread.getCurrentURL();
+			MainLogic.visitedURls.add(thisUrl);
+		//	MainLogic.visitedURls.add(myUrl);
 			int maxCountOfURLs = MainLogic.getMaxUrls();
 			int processedURLs = MainLogic.getProcessedURLs();
-			for(String currentURL : listOfUrls){
-				if(!MainLogic.visitedURls.contains(currentURL) && processedURLs <= maxCountOfURLs){
-					Thread t = new MainLogicThread(new URL(currentURL));
-					t.start();
+			//for(String currentURL : listOfUrls){
+			List<URL> mainList = MainLogic.globalListOfUrls;
+			synchronized(mainList) {
+				//   Iterator i = list.iterator();
+				for(URL currentURL : mainList){
+					if(!MainLogic.visitedURls.contains(currentURL) && processedURLs < maxCountOfURLs){
+						Thread t = new MainLogicThread(currentURL);
+						t.start();
+					}
+					//else return;
 				}
-				else return;
 			}
 		} 
 		catch (MalformedURLException e) { 
@@ -56,9 +96,11 @@ public class MainLogicThread extends Thread{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	public void findText(String s) throws Exception {
+	//	Source source = MainActivity.getSource();
 		String request = MainActivity.request;
 		int lastIndex = 0;
 		int count = 0;
@@ -69,46 +111,50 @@ public class MainLogicThread extends Thread{
 				lastIndex+=request.length();
 			}
 		}
-		MainLogic.map.put(myUrl, count); 
+		MainLogicThread thisThread = (MainLogicThread)Thread.currentThread();
+		URL url =thisThread.getCurrentURL();
+		//URL url = source.getCurrentURL();
+		MainLogic.map.put(url, count); 
 
 	}	
 
 
-	public List<String> findUrl(String s) {
-		Source source = MainActivity.getSource();
+	public void findUrl(String s) {
+	//	Source source = MainActivity.getSource();
 		int totalCountOfURLs = 0;
 		Pattern p = Pattern.compile("a href=\"(.*?)\"");
 		Matcher m = p.matcher(s);
 		ArrayList<String> links = new ArrayList<String>();
-		//	ArrayList<URL> urls = new ArrayList<URL>();
-		List<URL> url = new LinkedList<URL>();
-		//	List<URL> url = MainLogic.listOfUrls;
-		//	URL [] uri = new URL[links.size()];
 		while(m.find()){
 			links.add(m.group(1));
 			totalCountOfURLs ++;
 		}
-		source.setCountOfSubURLs(totalCountOfURLs);
-		source.setSubURLs(links);
-		return links;
-		
+		MainLogicThread thisThread = (MainLogicThread)Thread.currentThread();
+		thisThread.setCountOfSubURLs(totalCountOfURLs);
+		thisThread.setSubURLs(links);
+	//	source.setCountOfSubURLs(totalCountOfURLs);
+	//	source.setSubURLs(links);
+		try {
+			for(String currentURL : links){
+				URL nextURL = new URL(currentURL);
+				MainLogic.globalListOfUrls.add(nextURL);}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		MainLogic.setProcessedURLs(+1);
+
 	}
 
-	/*public static void cleanUp() throws Exception{
-		CommandProcessorThread thisThread = (CommandProcessorThread)Thread.currentThread();
-		Map<String, String> gamePares = MultiServer.gamePares;
-		List<String> sc = MultiServer.selectedClients;
-		Source source = thisThread.getSource();
-		String name = Utils.obtainMyName();
-		sc.remove(name);
-		gamePares.remove(name);
-		source.getGameData().clear();
-	}*/
+	public static void cleanUp() throws Exception{
+		List<URL> visitedURls= MainLogic.visitedURls;
+		List<URL> globalListOfUrls = MainLogic.globalListOfUrls;
+		Map<URL, Integer> map = MainLogic.map; 
+		visitedURls.removeAll(visitedURls);
+		globalListOfUrls.removeAll(globalListOfUrls);
+		map.remove(map);
+	}
 
-/*	private Context getApplicationContext() {
-		return null;
-	} */
-	
+
 	public URL getMyUrl() {
 		return myUrl;
 	}
@@ -116,7 +162,5 @@ public class MainLogicThread extends Thread{
 	public void setMyUrl(URL myUrl) {
 		this.myUrl = myUrl;
 	}
-	//Source source = new Source();
-	//		MainLogicThread thisThread = (MainLogicThread)Thread.currentThread();
-	//		Source source = thisThread.getSource();
+
 }

@@ -7,7 +7,8 @@ public class Source {
 
 	protected int CountOfSubURLs;
 	protected List<String> subURLs;
-
+	protected URL currentURL;
+	
 	public int getCountOfSubURLs() {
 		return CountOfSubURLs;
 	}
@@ -24,13 +25,13 @@ public class Source {
 		this.subURLs = subURLs;
 	}
 
-	/*public List<String> getFuck() {
-		return subURLs;
+	public URL getCurrentURL() {
+		return currentURL;
 	}
 
-	public void setFuck(List<String> fuck) {
-		this.subURLs = fuck;
-	}*/
+	public void setCurrentURL(URL currentURL) {
+		this.currentURL = currentURL;
+	}
 
 
 }

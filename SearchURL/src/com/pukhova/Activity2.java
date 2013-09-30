@@ -2,8 +2,6 @@ package com.pukhova;
 
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +34,6 @@ public class Activity2 extends ListActivity {
 			String sum = (first + second);
 			lst.add(sum);
 		}
-
-		//	Source source = MainActivity.getSource();
-		//	List<String> nl = source.getSubURLs(); 
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, lst);
 		//	ArrayAdapter<URL> adapter = new ArrayAdapter<URL>(this, android.R.layout.simple_expandable_list_item_1, url);
