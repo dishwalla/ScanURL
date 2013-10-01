@@ -9,8 +9,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -29,7 +32,7 @@ public class Activity2 extends ListActivity {
 		l = (ListView)findViewById(android.R.id.list);
 		//		List<URL> list2 = new ArrayList<URL>(list.keySet());              //  values from
 		//		List<Integer> list3 = new ArrayList<Integer>(list.values());          // map
-		Map<URL, Integer> list = MainLogic.map; 
+		Map<URL, Integer> list = GlobalFields.map; 
 		List<String> lst = new LinkedList<String>();
 
 		for(Map.Entry<URL, Integer> e : list.entrySet()) {
@@ -47,10 +50,22 @@ public class Activity2 extends ListActivity {
 	}
 
 	public static void cleanUp(){
-		MainLogic.visitedURls.clear(); 
-		MainLogic.globalListOfUrls.clear();
-		MainLogic.map.clear();
-		MainLogic.processedURLs.set(0);
-		MainLogic.progressBar.setProgress(0);
+		GlobalFields.visitedURls.clear(); 
+		GlobalFields.globalListOfUrls.clear();
+		GlobalFields.map.clear();
+		GlobalFields.processedURLs.set(0);
+		GlobalFields.progressBar.setProgress(0);
 	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event)  {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Intent intent = new Intent(Activity2.this, MainActivity.class); 
+			startActivity(intent);
+			Activity2.this.finish();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
 }

@@ -61,28 +61,28 @@ public class MainLogicThread extends Thread{
 			in.close();
 			findText(sc);
 			findUrl(sc);
-			MainLogic.visitedURls.add(myUrl);
-			int maxCountOfURLs = MainLogic.getMaxUrls();
-			int processedURLs = MainLogic.processedURLs.get();
-			List<URL> mainList = MainLogic.globalListOfUrls;
+			GlobalFields.visitedURls.add(myUrl);
+			int maxCountOfURLs = GlobalFields.getMaxUrls();
+			int processedURLs = GlobalFields.processedURLs.get();
+			List<URL> mainList = GlobalFields.globalListOfUrls;
 			synchronized(mainList) {
 				for(URL currentURL : mainList){
-					if(!MainLogic.visitedURls.contains(currentURL) && processedURLs < maxCountOfURLs){
+					if(!GlobalFields.visitedURls.contains(currentURL) && processedURLs < maxCountOfURLs){
 						Thread t = new MainLogicThread(currentURL);
 						t.start();
 						Log.w("Search", "Processing url:" + currentURL + " " + processedURLs);
-						processedURLs = MainLogic.processedURLs.incrementAndGet();
+						processedURLs = GlobalFields.processedURLs.incrementAndGet();
 					}
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			if (!MainLogic.map.containsKey(myUrl)){
-				MainLogic.map.put(myUrl, 0);
+			if (!GlobalFields.map.containsKey(myUrl)){
+				GlobalFields.map.put(myUrl, 0);
 			}
 		}
 		finally {
-			MainLogic.progressBar.incrementProgressBy(1);
+			GlobalFields.progressBar.incrementProgressBy(1);
 		}
 
 	}
@@ -98,7 +98,7 @@ public class MainLogicThread extends Thread{
 				lastIndex+=request.length();
 			}
 		}
-		MainLogic.map.put(myUrl, count); 
+		GlobalFields.map.put(myUrl, count); 
 	}	
 
 
@@ -119,7 +119,7 @@ public class MainLogicThread extends Thread{
 				try {
 					nextURL = new URL(currentURL);
 					u.add(nextURL);
-					MainLogic.globalListOfUrls.add(nextURL);
+					GlobalFields.globalListOfUrls.add(nextURL);
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				}

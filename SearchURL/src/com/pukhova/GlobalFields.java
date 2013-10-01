@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import android.widget.ProgressBar;
 
-public class MainLogic {
+public class GlobalFields {
 
 	public static List<URL> visitedURls= Collections.synchronizedList(new LinkedList<URL>());
 	public static List<URL> globalListOfUrls = Collections.synchronizedList(new LinkedList<URL>());
@@ -25,7 +25,7 @@ public class MainLogic {
 	}
 
 	public static void setThreads(int threads) {
-		MainLogic.threads = threads;
+		GlobalFields.threads = threads;
 	}
 
 	public static int getMaxUrls() {
@@ -33,7 +33,7 @@ public class MainLogic {
 	}
 
 	public static void setMaxUrls(int maxUrls) {
-		MainLogic.maxUrls = maxUrls;
+		GlobalFields.maxUrls = maxUrls;
 	}
 
 	public void process() throws Exception {

@@ -18,7 +18,7 @@
              android:numeric="integer"
             android:negativeButtonText="Cancel"
             android:positiveButtonText="Ok"
-            android:title="Max nuber of URLs to scan" />
+            android:title="Max number of URLs to scan" />
     </PreferenceCategory>
   
 

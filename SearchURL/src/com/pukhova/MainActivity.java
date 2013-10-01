@@ -29,10 +29,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	protected Button pause;
 	protected Button statistics;
 
-	private static int myProgress=0;
-	private int progressStatus=0;
-	private Handler myHandler=new Handler();
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -49,12 +45,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		pause.setOnClickListener(this);
 		statistics.setOnClickListener(this);
 
-		
-		//	if(maxUrls > 150){threads = preferences.getInt("urls", 150);}
-		MainLogic.visitedURls.clear(); 
-		MainLogic.globalListOfUrls.clear();
-		MainLogic.map.clear();
-		MainLogic.processedURLs.set(0);
+		GlobalFields.visitedURls.clear(); 
+		GlobalFields.globalListOfUrls.clear();
+		GlobalFields.map.clear();
+		GlobalFields.processedURLs.set(0);
 	}
 
 	@Override
@@ -65,16 +59,12 @@ public class MainActivity extends Activity implements OnClickListener {
 			{
 			case R.id.start:
 				String threads = preferences.getString("threads", "1");
-				MainLogic.setThreads(Integer.valueOf(threads));
-				//	if(threads > 6){threads = preferences.getInt("threads", 6);}
+				GlobalFields.setThreads(Integer.valueOf(threads));
 				String maxUrls = preferences.getString("urls", "1");
-				MainLogic.setMaxUrls(Integer.valueOf(maxUrls));
-				myProgress=0;
-				MainLogic.progressBar=(ProgressBar)findViewById(R.id.progressBar);
-				MainLogic.progressBar.setMax(MainLogic.maxUrls);
-
+				GlobalFields.setMaxUrls(Integer.valueOf(maxUrls));
+				GlobalFields.progressBar=(ProgressBar)findViewById(R.id.progressBar);
+				GlobalFields.progressBar.setMax(GlobalFields.maxUrls);
 				new Thread(){
-
 					@Override
 					public void run() {
 						URL myUrl;
@@ -83,14 +73,20 @@ public class MainActivity extends Activity implements OnClickListener {
 							request = textToSearch.getText().toString();
 							MainLogicThread mlt = new MainLogicThread(myUrl);
 							mlt.start();
-							MainLogic.processedURLs.incrementAndGet();
-							MainLogic.progressBar.incrementProgressBy(1);
-						} catch (MalformedURLException e) {
-							e.printStackTrace();
+							GlobalFields.processedURLs.incrementAndGet();
+							GlobalFields.progressBar.incrementProgressBy(1);
 						}
-					//	Toast.makeText(getBaseContext(),"Task Completed",Toast.LENGTH_LONG).show();
+						catch (MalformedURLException e) {
+							e.printStackTrace();}
 					}
 				}.start();
+				//if (GlobalFields.progressBar.getProgress() > GlobalFields.maxUrls){
+					Intent intent2 = new Intent(MainActivity.this, Activity2.class);
+					startActivity(intent2);
+					MainActivity.this.finish();
+			//		Toast.makeText(getBaseContext(),"Task Completed",Toast.LENGTH_LONG).show();
+				//	}
+				//	Toast.makeText(getBaseContext(),"Task Completed",Toast.LENGTH_LONG).show();
 				break;			
 			case R.id.stop: 
 				break;
