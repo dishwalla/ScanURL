@@ -6,6 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import android.widget.ProgressBar;
@@ -14,12 +17,14 @@ public class GlobalFields {
 
 	public static List<URL> visitedURls= Collections.synchronizedList(new LinkedList<URL>());
 	public static List<URL> globalListOfUrls = Collections.synchronizedList(new LinkedList<URL>());
-	public static Map<URL, Integer> map = new ConcurrentHashMap<URL, Integer>();
+	public static Map<URL, String> map = new ConcurrentHashMap<URL, String>();
 	public static int threads;
 	public static int maxUrls;
 	public static AtomicInteger processedURLs = new AtomicInteger(0);
 	public static ProgressBar progressBar;
-	
+	public static AtomicInteger totalCountOfURLs = new AtomicInteger(0);
+	public static ThreadPoolExecutor executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(10);
+
 	public static int getThreads() {
 		return threads;
 	}
@@ -36,8 +41,5 @@ public class GlobalFields {
 		GlobalFields.maxUrls = maxUrls;
 	}
 
-	public void process() throws Exception {
-		
-	}
 	
 }

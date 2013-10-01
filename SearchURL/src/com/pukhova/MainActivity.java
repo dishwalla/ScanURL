@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,11 +43,12 @@ public class MainActivity extends Activity implements OnClickListener {
 		stop.setOnClickListener(this);
 		pause.setOnClickListener(this);
 		statistics.setOnClickListener(this);
-
+		
 		GlobalFields.visitedURls.clear(); 
 		GlobalFields.globalListOfUrls.clear();
 		GlobalFields.map.clear();
 		GlobalFields.processedURLs.set(0);
+
 	}
 
 	@Override
@@ -64,6 +64,8 @@ public class MainActivity extends Activity implements OnClickListener {
 				GlobalFields.setMaxUrls(Integer.valueOf(maxUrls));
 				GlobalFields.progressBar=(ProgressBar)findViewById(R.id.progressBar);
 				GlobalFields.progressBar.setMax(GlobalFields.maxUrls);
+				//GlobalFields.executor.setMaximumPoolSize(GlobalFields.threads);
+				GlobalFields.executor.setCorePoolSize(GlobalFields.threads);
 				new Thread(){
 					@Override
 					public void run() {
@@ -71,8 +73,10 @@ public class MainActivity extends Activity implements OnClickListener {
 						try {
 							myUrl = new URL(enterURL.getText().toString());
 							request = textToSearch.getText().toString();
-							MainLogicThread mlt = new MainLogicThread(myUrl);
-							mlt.start();
+							//MainLogicThread mlt = new 
+							//mlt.start();
+							Runnable worker = new MainLogicThread(myUrl);
+							GlobalFields.executor.execute(worker);
 							GlobalFields.processedURLs.incrementAndGet();
 							GlobalFields.progressBar.incrementProgressBy(1);
 						}
@@ -80,15 +84,13 @@ public class MainActivity extends Activity implements OnClickListener {
 							e.printStackTrace();}
 					}
 				}.start();
-				//if (GlobalFields.progressBar.getProgress() > GlobalFields.maxUrls){
-					Intent intent2 = new Intent(MainActivity.this, Activity2.class);
-					startActivity(intent2);
-					MainActivity.this.finish();
+			//	if (GlobalFields.progressBar.getProgress() == GlobalFields.maxUrls){
 			//		Toast.makeText(getBaseContext(),"Task Completed",Toast.LENGTH_LONG).show();
-				//	}
-				//	Toast.makeText(getBaseContext(),"Task Completed",Toast.LENGTH_LONG).show();
+			//	}
 				break;			
 			case R.id.stop: 
+				GlobalFields.executor.shutdown();
+				Toast.makeText(getBaseContext(),"Task Completed",Toast.LENGTH_LONG).show();
 				break;
 			case R.id.pause: 
 				break;

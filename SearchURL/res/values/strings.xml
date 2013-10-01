@@ -15,5 +15,6 @@
     <string name="notFound">Text not found</string>
     <string name="loading">Loading..</string>
     <string name="statistics_button">Statistics</string>
+    <string name="results">Results:</string>
 
 </resources>

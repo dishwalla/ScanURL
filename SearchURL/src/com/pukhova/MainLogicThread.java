@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import android.util.Log;
 
 
@@ -56,7 +55,6 @@ public class MainLogicThread extends Thread{
 			URLConnection myURLConnection = myUrl.openConnection();
 			myURLConnection.connect();
 			InputStream in = myUrl.openStream();
-			//map.put(myUrl,Downloading")
 			String sc = new Scanner(in).useDelimiter("\\A").next();
 			in.close();
 			findText(sc);
@@ -68,18 +66,28 @@ public class MainLogicThread extends Thread{
 			synchronized(mainList) {
 				for(URL currentURL : mainList){
 					if(!GlobalFields.visitedURls.contains(currentURL) && processedURLs < maxCountOfURLs){
-						Thread t = new MainLogicThread(currentURL);
-						t.start();
+						GlobalFields.executor.execute(new MainLogicThread(currentURL));
+					//	Thread t = new MainLogicThread(currentURL);
+					//	t.start();
 						Log.w("Search", "Processing url:" + currentURL + " " + processedURLs);
 						processedURLs = GlobalFields.processedURLs.incrementAndGet();
 					}
 				}
 			}
-		} catch (Exception e) {
+		} 
+		catch (MalformedURLException e) {
+			GlobalFields.map.put(myUrl, "Error");
+			}
+			catch (IOException e) {
+				GlobalFields.map.put(myUrl, "Connection failed");
+			} 
+		catch (Exception e) {
 			e.printStackTrace();
 			if (!GlobalFields.map.containsKey(myUrl)){
-				GlobalFields.map.put(myUrl, 0);
+				Integer i = 0;
+				GlobalFields.map.put(myUrl, i.toString());
 			}
+			
 		}
 		finally {
 			GlobalFields.progressBar.incrementProgressBy(1);
@@ -90,7 +98,7 @@ public class MainLogicThread extends Thread{
 	public void findText(String s) throws Exception {
 		String request = MainActivity.request;
 		int lastIndex = 0;
-		int count = 0;
+		Integer count = 0;
 		while(lastIndex != -1){
 			lastIndex = s.indexOf(request,lastIndex);
 			if( lastIndex != -1){
@@ -98,20 +106,20 @@ public class MainLogicThread extends Thread{
 				lastIndex+=request.length();
 			}
 		}
-		GlobalFields.map.put(myUrl, count); 
+		GlobalFields.map.put(myUrl, count.toString()); 
 	}	
 
 
 	public List<URL> findUrl(String s) {
-		//int totalCountOfURLs = 0;
+		Integer totalCountOfURLs = 0;
 		Pattern p = Pattern.compile("a href=\"(.*?)\"");
 		Matcher m = p.matcher(s);
 		ArrayList<String> links = new ArrayList<String>();
 		while(m.find()){
 			links.add(m.group(1));
-		//	totalCountOfURLs ++;
+			totalCountOfURLs ++;
 		}
-	//	setCountOfSubURLs(totalCountOfURLs);
+		GlobalFields.totalCountOfURLs.getAndAdd(totalCountOfURLs); 
 		setSubURLs(links);
 		List<URL> u = new ArrayList<URL>();
 			for(String currentURL : links){

@@ -32,11 +32,12 @@ public class Activity2 extends ListActivity {
 		l = (ListView)findViewById(android.R.id.list);
 		//		List<URL> list2 = new ArrayList<URL>(list.keySet());              //  values from
 		//		List<Integer> list3 = new ArrayList<Integer>(list.values());          // map
-		Map<URL, Integer> list = GlobalFields.map; 
+		Map<URL, String> list = GlobalFields.map; 
 		List<String> lst = new LinkedList<String>();
 
-		for(Map.Entry<URL, Integer> e : list.entrySet()) {
+		for(Map.Entry<URL, String> e : list.entrySet()) {
 			String first = e.getKey() + " ";
+			//String first = e.getKey() + GlobalFields.totalCountOfURLs.toString();
 			String second = e.getValue().toString();
 			String sum = (first + second);
 			lst.add(sum);
