@@ -2,27 +2,26 @@ package com.pukhova;
 
 
 import java.net.URL;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
-
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class Activity2 extends ListActivity {
 	protected TextView text;
 	protected ListView l;
 	protected Map<URL, Integer> results;
+	protected String name;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,26 +29,30 @@ public class Activity2 extends ListActivity {
 		setContentView(R.layout.activity2);
 		text = (TextView)findViewById(R.id.text);
 		l = (ListView)findViewById(android.R.id.list);
-		//		List<URL> list2 = new ArrayList<URL>(list.keySet());              //  values from
-		//		List<Integer> list3 = new ArrayList<Integer>(list.values());          // map
+		getListView().setOnItemClickListener(itemListener);
 		Map<URL, String> list = GlobalFields.map; 
 		List<String> lst = new LinkedList<String>();
-
 		for(Map.Entry<URL, String> e : list.entrySet()) {
-			String first = e.getKey() + " ";
-			//String first = e.getKey() + GlobalFields.totalCountOfURLs.toString();
-			String second = e.getValue().toString();
+			String first = e.getKey() + " text found ";
+			String second = e.getValue().toString() + " times";
 			String sum = (first + second);
 			lst.add(sum);
 		}
-
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, lst);
 		l.setAdapter(adapter);
 		cleanUp();
-		//	ArrayAdapter<URL> adapter = new ArrayAdapter<URL>(this, android.R.layout.simple_expandable_list_item_1, url);
-		//ArrayAdapter<URL> adapter2 = new ArrayAdapter<URL>(this, android.R.layout.simple_expandable_list_item_1, nl);
 	}
 
+
+	OnItemClickListener itemListener = new OnItemClickListener() {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View v,
+				int position, long id) {
+			name = parent.getItemAtPosition(position).toString();
+			Toast.makeText(getApplicationContext(),	"On link " + name, Toast.LENGTH_LONG).show();
+
+		}
+	};
 	public static void cleanUp(){
 		GlobalFields.visitedURls.clear(); 
 		GlobalFields.globalListOfUrls.clear();
@@ -57,7 +60,7 @@ public class Activity2 extends ListActivity {
 		GlobalFields.processedURLs.set(0);
 		GlobalFields.progressBar.setProgress(0);
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)  {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {

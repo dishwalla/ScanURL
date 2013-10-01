@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,7 +22,7 @@ public class GlobalFields {
 	public static AtomicInteger processedURLs = new AtomicInteger(0);
 	public static ProgressBar progressBar;
 	public static AtomicInteger totalCountOfURLs = new AtomicInteger(0);
-	public static ThreadPoolExecutor executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(10);
+	public static ThreadPoolExecutor executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(5);
 
 	public static int getThreads() {
 		return threads;

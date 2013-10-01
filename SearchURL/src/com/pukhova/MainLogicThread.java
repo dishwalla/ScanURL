@@ -67,8 +67,6 @@ public class MainLogicThread extends Thread{
 				for(URL currentURL : mainList){
 					if(!GlobalFields.visitedURls.contains(currentURL) && processedURLs < maxCountOfURLs){
 						GlobalFields.executor.execute(new MainLogicThread(currentURL));
-					//	Thread t = new MainLogicThread(currentURL);
-					//	t.start();
 						Log.w("Search", "Processing url:" + currentURL + " " + processedURLs);
 						processedURLs = GlobalFields.processedURLs.incrementAndGet();
 					}
@@ -77,22 +75,20 @@ public class MainLogicThread extends Thread{
 		} 
 		catch (MalformedURLException e) {
 			GlobalFields.map.put(myUrl, "Error");
-			}
-			catch (IOException e) {
-				GlobalFields.map.put(myUrl, "Connection failed");
-			} 
+		}
+		catch (IOException e) {
+			GlobalFields.map.put(myUrl, "Connection failed");
+		} 
 		catch (Exception e) {
 			e.printStackTrace();
 			if (!GlobalFields.map.containsKey(myUrl)){
 				Integer i = 0;
 				GlobalFields.map.put(myUrl, i.toString());
 			}
-			
 		}
 		finally {
 			GlobalFields.progressBar.incrementProgressBy(1);
 		}
-
 	}
 
 	public void findText(String s) throws Exception {
@@ -122,17 +118,17 @@ public class MainLogicThread extends Thread{
 		GlobalFields.totalCountOfURLs.getAndAdd(totalCountOfURLs); 
 		setSubURLs(links);
 		List<URL> u = new ArrayList<URL>();
-			for(String currentURL : links){
-				URL nextURL;
-				try {
-					nextURL = new URL(currentURL);
-					u.add(nextURL);
-					GlobalFields.globalListOfUrls.add(nextURL);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
+		for(String currentURL : links){
+			URL nextURL;
+			try {
+				nextURL = new URL(currentURL);
+				u.add(nextURL);
+				GlobalFields.globalListOfUrls.add(nextURL);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
 			}
-			return u;
+		}
+		return u;
 	}
 
 	public URL getMyUrl() {

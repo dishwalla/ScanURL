@@ -77,13 +77,13 @@
         android:layout_marginBottom="25dp"
         android:text="@string/loading" />
 
-     <Button
-         android:id="@+id/statistics"
-         android:layout_width="141dp"
-         android:layout_height="wrap_content"
-         android:layout_alignLeft="@+id/progressBar"
-         android:layout_alignParentBottom="true"
-         android:layout_alignRight="@+id/progressBar"
-         android:text="@string/statistics_button" />
-     
+    <Button
+        android:id="@+id/statistics"
+        android:layout_width="141dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/progressBar"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/progressBar"
+        android:text="@string/statistics_button" />
+
 </RelativeLayout>

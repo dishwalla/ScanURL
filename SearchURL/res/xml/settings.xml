@@ -3,23 +3,21 @@
 
     <PreferenceCategory android:title="@string/pref_user" >
         <EditTextPreference
-             android:defaultValue="1"
+            android:defaultValue="1"
             android:dialogMessage="How many threads will be started?"
             android:key="threads"
-             android:numeric="integer"
             android:negativeButtonText="Cancel"
+            android:numeric="integer"
             android:positiveButtonText="Ok"
             android:title="Number of running threads" />
-        
         <EditTextPreference
-             android:defaultValue="1"
+            android:defaultValue="1"
             android:dialogMessage="Max quantity of URLs"
             android:key="urls"
-             android:numeric="integer"
             android:negativeButtonText="Cancel"
+            android:numeric="integer"
             android:positiveButtonText="Ok"
             android:title="Max number of URLs to scan" />
     </PreferenceCategory>
-  
 
 </PreferenceScreen>

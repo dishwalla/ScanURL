@@ -2,7 +2,6 @@ package com.pukhova;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -64,7 +63,6 @@ public class MainActivity extends Activity implements OnClickListener {
 				GlobalFields.setMaxUrls(Integer.valueOf(maxUrls));
 				GlobalFields.progressBar=(ProgressBar)findViewById(R.id.progressBar);
 				GlobalFields.progressBar.setMax(GlobalFields.maxUrls);
-				//GlobalFields.executor.setMaximumPoolSize(GlobalFields.threads);
 				GlobalFields.executor.setCorePoolSize(GlobalFields.threads);
 				new Thread(){
 					@Override
@@ -73,30 +71,29 @@ public class MainActivity extends Activity implements OnClickListener {
 						try {
 							myUrl = new URL(enterURL.getText().toString());
 							request = textToSearch.getText().toString();
-							//MainLogicThread mlt = new 
-							//mlt.start();
 							Runnable worker = new MainLogicThread(myUrl);
 							GlobalFields.executor.execute(worker);
 							GlobalFields.processedURLs.incrementAndGet();
-							GlobalFields.progressBar.incrementProgressBy(1);
+							GlobalFields.progressBar.incrementProgressBy(1);   
 						}
 						catch (MalformedURLException e) {
 							e.printStackTrace();}
 					}
 				}.start();
-			//	if (GlobalFields.progressBar.getProgress() == GlobalFields.maxUrls){
-			//		Toast.makeText(getBaseContext(),"Task Completed",Toast.LENGTH_LONG).show();
-			//	}
 				break;			
 			case R.id.stop: 
 				GlobalFields.executor.shutdown();
-				Toast.makeText(getBaseContext(),"Task Completed",Toast.LENGTH_LONG).show();
-				break;
-			case R.id.pause: 
-				break;
-			case R.id.statistics:
+				Toast.makeText(getBaseContext(),"Task is not completed",Toast.LENGTH_LONG).show();
 				Intent intent = new Intent(MainActivity.this, Activity2.class);
 				startActivity(intent);
+				MainActivity.this.finish();
+				break;
+			case R.id.pause:
+
+				break;
+			case R.id.statistics:
+				Intent intent2 = new Intent(MainActivity.this, Activity2.class);
+				startActivity(intent2);
 				MainActivity.this.finish();
 				break;
 			}
